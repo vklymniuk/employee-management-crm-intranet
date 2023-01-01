@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      args:
+        apihome: ${API_HOME_DIR}
+        debugport: ${API_DEBUG_PORT}
+    environment:
+        - NODE_ENV=${API_NODE_ENV}
+        - TZ=Europe/Kiev
+    ports:
+        - "${API_PORT}:80"
+        - "${API_DEBUG_PORT}:9229"
+    volumes:
+        - "${API_HOST_DIR}:${API_HOME_DIR}"
+        - "${API_HOME_DIR}/node_modules"
+    networks:
+        - webnet
+    depends_on:
+        - db
+
+  db:
+    platform: linux/x86_64
+    image: "mysql:8.0"
+    cap_add:
+        - SYS_NICE
+    volumes:
+        - mysql-volume:/var/lib/mysql
+        - ${SQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+        - "${SQL_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${SQL_PASSWORD}
+    networks:
+        - webnet
+
+networks:
+    webnet:
+
+volumes:
+    mysql-volume:

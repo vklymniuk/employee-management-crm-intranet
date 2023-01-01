@@ -1,0 +1,25 @@
+FROM node:lts
+
+ENV TZ=Europe/Kiev
+
+RUN apt-get update && apt-get install -y build-essential
+
+ARG apihome
+ENV APP_HOME ${apihome}
+
+RUN mkdir ${APP_HOME}
+
+WORKDIR ${APP_HOME}
+
+COPY package*.json .
+
+RUN npm install -g node-gyp
+RUN npm install -g pm2
+RUN npm install
+
+COPY . .
+
+EXPOSE 80
+EXPOSE 9229
+
+CMD ["pm2-docker", "ecosystem.config.js"]
