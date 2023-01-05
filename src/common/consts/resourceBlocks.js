@@ -1,0 +1,52 @@
+const RESOURCE_BLOCK = {
+    mainInfo: [
+      'firstName',
+      'lastName',
+      'roleId',
+      'role',
+      'primaryTechnologyId',
+      'primaryTechnology',
+      'secondaryTechnologyId',
+      'secondaryTechnology',
+      'techLevelId',
+      'techLevel',
+      'englishLevelId',
+      'englishLevel',
+      'locationId',
+      'location',
+    ],
+    contactInfo: [
+      'skype',
+      'email',
+      'phone',
+      'githubLink',
+      'jiraLink',
+    ],
+    otherInfo: [
+      'birthday',
+      'remote',
+      'isPartTime',
+      'cvLink',
+      'lastEvaluationDate',
+      'isEvaluationNeeded',
+      'defaultAssignmentTypeId',
+      'defaultAssignmentType',
+      'hubstaffLink',
+    ],
+    vacationInfo: [
+      'contractStartDate',
+      'contractEndDate',
+      'paidVacationDays',
+      'paidVacationDaysLeft',
+      'unpaidVacationDays',
+      'unpaidVacationDaysLeft',
+    ],
+    statusInfo: [
+      'statusFilter',
+      'hireDate',
+      'terminationDate',
+      'eligibleForRehire',
+    ],
+};
+
+module.exports = RESOURCE_BLOCK;
