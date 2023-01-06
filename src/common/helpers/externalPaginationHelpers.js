@@ -1,7 +1,9 @@
 class ExternalPaginationHelpers {
     static getPagination(data, options, resultKey = 'items') {
       // If data is not array, pagination cannot work
-      if (!Array.isArray(data)) return null;
+      if (!Array.isArray(data)) {
+          return null;
+      }
   
       // Getting limit and page from query options
       const { limit: pageSize, page: currentPage } = options;
@@ -20,18 +22,15 @@ class ExternalPaginationHelpers {
         paginatedData = data
           .slice((currentPage - 1) * pageSize)
           .slice(0, pageSize);
-      } else paginatedData = data;
+      } else {
+          paginatedData = data;
+      }
   
       return {
-        pagination: {
-          totalItems,
-          totalPages,
-          currentPage,
-        },
+        pagination: { totalItems, totalPages, currentPage, },
         [resultKey]: paginatedData,
       };
     }
-  }
-  
-  module.exports = ExternalPaginationHelpers;
-  
+}
+
+module.exports = ExternalPaginationHelpers;

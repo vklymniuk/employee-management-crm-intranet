@@ -10,11 +10,13 @@ class DateHelpers {
   static getDatesDiff(startDate, endDate) {
     const start = moment.isMoment(startDate) ? startDate : moment(startDate);
     const end = moment.isMoment(endDate) ? endDate : moment(endDate);
+
     return moment.duration(end.diff(start));
   }
 
   static isBirthdayToday(birthday) {
     const currentDate = moment.utc();
+
     return currentDate.isSame(birthday, 'day') && currentDate.isSame(birthday, 'month');
   }
 
@@ -25,50 +27,52 @@ class DateHelpers {
   /**
    * Check if date is in the current month
    * @param date
-   * @returns {boolean}
+   * 
+   * @returns { Boolean }
    */
   static isDateInCurrentMonth(date) {
     const now = new Date();
     const dt = new Date(date);
 
-    return ((dt > now)
-      && (now.getMonth() === dt.getMonth())
-      && (now.getFullYear() === dt.getFullYear())
-    );
+    return ((dt > now) && (now.getMonth() === dt.getMonth()) && (now.getFullYear() === dt.getFullYear()));
   }
 
   /**
    * Calculate how many days are left until the date
    * @param start
    * @param end
-   * @returns {number}
+   * 
+   * @returns { Number }
    */
   static amountOfDaysInDate(start, end) {
+    let difference;
     let startDate = new Date();
     const endDate = arguments.length === 1 ? new Date(start) : new Date(end);
 
-    let difference;
     if (arguments.length === 2) {
       startDate = new Date(start);
       difference = endDate.getTime() - startDate.getTime();
     } else {
+
       if (endDate.getTime() < startDate.getTime()) {
         return 0;
       }
 
       difference = endDate.getTime() - startDate.getTime();
     }
-    return (Math.ceil(difference / (1000 * 3600 * 24))) || 0;
+
+      return (Math.ceil(difference / (1000 * 3600 * 24))) || 0;
   }
 
   /**
    * To check if start date not less than end date
    * @param start
    * @param end
-   * @returns {boolean}
+   * 
+   * @returns { Boolean }
    */
   static isValidDates(start, end) {
-    return new Date(end) >= new Date(start);
+      return new Date(end) >= new Date(start);
   }
 
   /**
@@ -76,7 +80,8 @@ class DateHelpers {
    * @param start
    * @param end
    * @param date
-   * @returns {boolean}
+   * 
+   * @returns { Boolean }
    */
   static isDateInYear(start, end, date) {
     const startDate = new Date(start);
@@ -90,6 +95,7 @@ class DateHelpers {
    * Comparing two dates
    * @param d1
    * @param d2
+   * 
    * @returns {boolean}
    */
   static compareDate(d1, d2) {
@@ -103,12 +109,16 @@ class DateHelpers {
     switch (type) {
       case DATE_BEFORE_TYPE.MONTH: {
         const result = now.add(1, 'month');
+
         return dayjs(result).isSame(target, 'date');
       }
+
       case DATE_BEFORE_TYPE.WEEK: {
         const result = now.add(1, 'week');
+
         return dayjs(result).isSame(target, 'date');
       }
+
       default:
         return false;
     }
@@ -137,9 +147,11 @@ class DateHelpers {
     let weekendDayCount = 0;
 
     while (fromDate <= toDate) {
+
       if (fromDate.getDay() === 0 || fromDate.getDay() === 6) {
         weekendDayCount += 1;
       }
+
       fromDate.setDate(fromDate.getDate() + 1);
     }
 
@@ -164,7 +176,10 @@ class DateHelpers {
         (holiday) => holiday.day === fromDate.getDate()
           && holiday.month === (fromDate.getMonth() + 1),
       );
-      if (isHoliday) holidaysCount += 1;
+
+      if (isHoliday) {
+          holidaysCount += 1;
+      }
       fromDate.setDate(fromDate.getDate() + 1);
     }
 

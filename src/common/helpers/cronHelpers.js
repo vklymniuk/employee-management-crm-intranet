@@ -4,11 +4,18 @@ const TIMES = {
     HOUR: 3600,
     DAY: 86400,
     MONTH: 2678400,
-  };
-  
-  const CRON_POSITION = [TIMES.SECOND, TIMES.MINUTE, TIMES.HOUR, TIMES.DAY, TIMES.MONTH];
-  
-  class CronHelpers {
+};
+
+const CRON_POSITION = [
+    TIMES.SECOND,
+    TIMES.MINUTE,
+    TIMES.HOUR,
+    TIMES.DAY,
+    TIMES.MONTH,
+];
+
+class CronHelpers {
+
     static getCronExpression(seconds) {
       let secsLeft;
       const month = Math.floor(seconds / TIMES.MONTH);
@@ -20,28 +27,32 @@ const TIMES = {
       const minute = Math.floor(secsLeft / TIMES.MINUTE);
       secsLeft %= TIMES.MINUTE;
       const result = [secsLeft, minute, hour, day, month, 0];
-  
+
       return result.map((item, index) => {
         const next = result[index + 1];
+
         if (item === 0 && next !== 0 && next !== undefined) {
-          return '0';
+            return '0';
         }
+
         return item === 0 ? '*' : `*/${item}`;
       }).join(' ');
     }
-  
+
     static getIntervalFromCron(cron) {
       const values = cron.split(' ');
       const result = values.reduce((prev, current, index) => {
-        const value = Number(current.split('/')[1]);
+      const value = Number(current.split('/')[1]);
+
         if (!Number.isNaN(value)) {
-          return prev + value * CRON_POSITION[index];
+            return prev + value * CRON_POSITION[index];
         }
+
         return prev;
       }, 0);
+
       return result;
     }
-  }
-  
-  module.exports = CronHelpers;
-  
+}
+
+module.exports = CronHelpers;

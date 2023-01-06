@@ -4,7 +4,7 @@ const styles = {
   header: {
     fill: {
       fgColor: {
-        rgb: 'D3D3D3',
+          rgb: 'D3D3D3',
       },
     },
   },
@@ -228,53 +228,57 @@ const projectSpecColumns = {
 
 function buildResourceSpecification(columns) {
   const resourceSpecification = {};
+
   if (!Array.isArray(columns) || columns.length === 0) {
-    return resourceSpecColumns;
+      return resourceSpecColumns;
   }
+
   columns.forEach((column) => {
+
     if (column === 'project') {
-      resourceSpecification.projects = resourceSpecColumns.projects;
+        resourceSpecification.projects = resourceSpecColumns.projects;
     } else if (resourceSpecColumns[column]) {
-      resourceSpecification[column] = resourceSpecColumns[column];
+        resourceSpecification[column] = resourceSpecColumns[column];
     }
+
   });
+
   return resourceSpecification;
 }
 
 function buildProjectSpecification(columns) {
-  const projectSpecification = {};
-  if (!Array.isArray(columns) || columns.length === 0) {
-    return projectSpecColumns;
-  }
+    const projectSpecification = {};
 
-  columns.forEach((column) => {
-    if (projectSpecColumns[column]) {
-      projectSpecification[column] = projectSpecColumns[column];
+    if (!Array.isArray(columns) || columns.length === 0) {
+        return projectSpecColumns;
     }
-  });
 
-  return projectSpecification;
+    columns.forEach((column) => {
+
+        if (projectSpecColumns[column]) {
+            projectSpecification[column] = projectSpecColumns[column];
+        }
+
+    });
+
+    return projectSpecification;
 }
 
 class ExcelHelper {
   static buildResourceExcel(data, columns) {
-    return excel.buildExport([
-      {
-        name: 'Resources',
-        specification: buildResourceSpecification(columns),
-        data,
-      },
-    ]);
+    return excel.buildExport([{
+          name: 'Resources',
+          specification: buildResourceSpecification(columns),
+          data,
+    },]);
   }
 
   static buildProjectExcel(data, columns) {
-    return excel.buildExport([
-      {
-        name: 'Projects',
-        specification: buildProjectSpecification(columns),
-        data,
-      },
-    ]);
+    return excel.buildExport([{
+          name: 'Projects',
+          specification: buildProjectSpecification(columns),
+          data,
+    },]);
   }
 }
 
