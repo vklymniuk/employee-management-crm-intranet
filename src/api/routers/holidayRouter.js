@@ -10,4 +10,5 @@ router.get('/:id', HolidayController.getHoliday);
 router.post('/', validate(holidayValidator.create), HolidayController.createHoliday,);
 router.put('/:id', validate(holidayValidator.update), HolidayController.updateHoliday,);
 router.delete('/:id', validate(commonValidator.deleteReq), HolidayController.deleteHoliday,);
+
 module.exports = router;
