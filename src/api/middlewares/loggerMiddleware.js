@@ -7,10 +7,7 @@ const actionLogService = ServiceFactory.createActionLogService();
 function loggerMiddleware(req, res, next) {
   const { models } = sequelizeDb;
   const { userId } = req.user;
-
-  Object
-    .keys(models)
-    .forEach((key) => LoggerHelpers.init(userId, actionLogService).run(models[key]));
+  Object.keys(models).forEach((key) => LoggerHelpers.init(userId, actionLogService).run(models[key]));
 
   next();
 }

@@ -154,55 +154,54 @@ async function marketingWorker(task) {
       );
 
       try {
+              if (email) {
+                  await mailingSenderService.incLettersCount(mailingSender);
+                  await gmail.sendEmail(email);
+                  mailingRecipient.sentAt = sentAt;
+                  await mailingRecipient.save();
+                  await recipientService.incrementLettersCount(recipient);
+                  recipient.lastContacted = sentAt;
+                  await recipient.save();
+              }
 
-            if (email) {
-                await mailingSenderService.incLettersCount(mailingSender);
-                await gmail.sendEmail(email);
-                mailingRecipient.sentAt = sentAt;
-                await mailingRecipient.save();
-                await recipientService.incrementLettersCount(recipient);
-                recipient.lastContacted = sentAt;
-                await recipient.save();
-            }
+              const result = await recipientService.getAllRecipientByMailingId(mailing.id);
 
-            const result = await recipientService.getAllRecipientByMailingId(mailing.id);
+              if (result.count > 0) {
+                  const total = result.count;
+                  const done = result.rows.map((item) => item.sentAt)
+                      .filter((x) => x != null).length;
 
-            if (result.count > 0) {
-                const total = result.count;
-                const done = result.rows.map((item) => item.sentAt)
-                    .filter((x) => x != null).length;
+                  // Send one email to sender)
+                  const { lettersCount } = mailingSender;
 
-                // Send one email to sender)
-                const { lettersCount } = mailingSender;
+                  if (lettersCount === 0 && mailing.sendToSender) {
+                      await gmail.sendEmail(EmailsFactory.createMarketingEmail(
+                          modifiedSubject,
+                          content,
+                          authCredential.email,
+                          authCredential.email,
+                      ));
+                  }
 
-                if (lettersCount === 0 && mailing.sendToSender) {
-                    await gmail.sendEmail(EmailsFactory.createMarketingEmail(
-                        modifiedSubject,
-                        content,
-                        authCredential.email,
-                        authCredential.email,
-                    ));
-                }
+                  const progress = (done * 100) / total;
 
-                const progress = (done * 100) / total;
+                  if (progress == 100) {
+                      task.status = TASK_STATUSES.COMPLETED;
+                      const letter = EmailsFactory.createMailingFinishedEmail(
+                          mailing,
+                          mailing.user.email,
+                      );
 
-                if (progress == 100) {
-                    task.status = TASK_STATUSES.COMPLETED;
-                    const letter = EmailsFactory.createMailingFinishedEmail(
-                        mailing,
-                        mailing.user.email,
-                    );
-
-                    if (letter) {
-                        smtp.sendEmail(letter);
-                    }
-                }
-                task.progress = progress;
-                task.workedAt = sentAt;
-                
-                await taskService.updateTask(task);
-            }
-      } catch (err) {
+                      if (letter) {
+                          smtp.sendEmail(letter);
+                      }
+                  }
+                  task.progress = progress;
+                  task.workedAt = sentAt;
+                  
+                  await taskService.updateTask(task);
+              }
+        } catch (err) {
       }
     }
   }

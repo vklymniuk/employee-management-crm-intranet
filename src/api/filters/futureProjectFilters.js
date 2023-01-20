@@ -11,19 +11,19 @@ async function futureProjectFilters(query) {
   const filtersByTechnologyType = query.filters.find((p) => p.key === FUTURE_PROJECT_FILTER.TECHNOLOGY_TYPE,);
 
   if (filtersByTechnologies || filtersByTechnologyType) {
-    result = await projectService.getFutureProjects({...query, pagination: null,});
+      result = await projectService.getFutureProjects({...query, pagination: null,});
   }
 
   if (filtersByTechnologies) {
-    projects = await getFutureProjectByTechnologies(result.projects, filtersByTechnologies,);
+      projects = await getFutureProjectByTechnologies(result.projects, filtersByTechnologies,);
   }
 
   if (filtersByTechnologyType) {
-    projects = await getFutureProjectByTechnologies(result.projects, filtersByTechnologyType,);
+      projects = await getFutureProjectByTechnologies(result.projects, filtersByTechnologyType,);
   }
 
   if (filtersByTechnologies || filtersByTechnologyType) {
-    return ExternalPaginationHelpers.getPagination(projects, query.pagination, 'projects',);
+      return ExternalPaginationHelpers.getPagination(projects, query.pagination, 'projects',);
   }
 
   return null;

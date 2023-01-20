@@ -29,9 +29,11 @@ async function contractExpirationDate() {
       const email = oneMonthBefore
         ? EmailsFactory.createContractExpiration(x, emailList)
         : EmailsFactory.createContractExpiration(x, emailList, CONTRACT_EXPIRATION_TYPE.WEEK);
+
       if (email) {
         smtp.sendEmail(email);
       }
+
     }
   });
 }

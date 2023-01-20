@@ -21,6 +21,7 @@ async function authMiddleware(req, res, next) {
       await setUser(req, userId);
       await next();
     }
+
   } catch (err) {
     await next(err);
   }

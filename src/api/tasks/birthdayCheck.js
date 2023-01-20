@@ -12,9 +12,11 @@ async function birthdayCheck() {
   const resources = await resourceRepository.getAll();
 
   const isResourceOfOffice = (resource, locationId, role) => {
+
     if (resource.resourceRole && resource.resourceRole.title === role) {
       return resource.locationId === locationId;
     }
+
     return false;
   };
 
@@ -23,10 +25,13 @@ async function birthdayCheck() {
   };
 
   resources.items.forEach((x) => {
+
     if (!x.birthday) {
       return;
     }
+
     const isBirthday = DateHelpers.isBirthdayToday(x.birthday);
+
     if (isBirthday) {
       const recipients = resources.items.filter((resource) => (
         isResourceOfOffice(resource, x.locationId, ROLES.HR)
@@ -37,6 +42,7 @@ async function birthdayCheck() {
 
       const emailList = recipients.map((r) => r.email);
       const email = EmailsFactory.createBirthdayEmail(x, emailList);
+
       if (email) {
         smtp.sendEmail(email);
       }

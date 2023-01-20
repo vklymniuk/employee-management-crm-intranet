@@ -1,0 +1,65 @@
+{
+    "development": {
+      "username": "root",
+      "password": "password.Dev",
+      "database": "database.Dev",
+      "host": "localhost",
+      "dialect": "mysql",
+      "seederStorage": "sequelize",
+      "dialectOptions": {
+        "timezone": false
+      },
+      "timezone": "Etc/GMT+0"
+    },
+    "dev": {
+      "username": "username",
+      "password": "password.Test",
+      "database": "database.Dev",
+      "host": "localhost",
+      "port": 3307,
+      "dialect": "mysql",
+      "seederStorage": "sequelize",
+      "dialectOptions": {
+        "timezone": false
+      },
+      "timezone": "Etc/GMT+0"
+    },
+    "docker": {
+      "username": "username",
+      "password": "password.Dev",
+      "database": "database.Dev",
+      "host": "db",
+      "dialect": "mysql",
+      "seederStorage": "sequelize",
+      "dialectOptions": {
+        "timezone": false
+      },
+      "timezone": "Etc/GMT+0"
+    },
+    "stage": {
+      "username": "username.Stage",
+      "password": "password.Stage",
+      "database": "database.Stage",
+      "host": "localhost",
+      "port": 3307,
+      "dialect": "mysql",
+      "seederStorage": "sequelize",
+      "dialectOptions": {
+        "timezone": false
+      },
+      "timezone": "Etc/GMT+0"
+    },
+    "production": {
+      "username": "username.Prod",
+      "password": "password.Prod",
+      "database": "database.Prod",
+      "host": "www.host",
+      "dialect": "mysql",
+      "port": 25060,
+      "seederStorage": "sequelize",
+      "dialectOptions": {
+        "timezone": false
+      },
+      "timezone": "Etc/GMT+0"
+    }
+}
