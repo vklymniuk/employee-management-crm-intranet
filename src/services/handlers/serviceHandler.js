@@ -2,14 +2,18 @@ const { Helpers } = require('../../common/helpers');
 
 class ServiceHandler {
   constructor(repositories, services) {
-    if (repositories) this.parseObjects(repositories);
-    if (services) this.parseObjects(services);
+    if (repositories) {
+        this.parseObjects(repositories);
+    }
+
+    if (services) {
+        this.parseObjects(services);
+    }
   }
 
   parseObjects(arr) {
     arr.forEach((obj) => {
       const { name: className } = obj.constructor;
-
       const name = Helpers.toLowerCaseFirstLetter(className);
       this[name] = obj;
 

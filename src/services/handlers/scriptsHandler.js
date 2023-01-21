@@ -14,7 +14,6 @@ class ScriptHandler extends ServiceHandler {
     return events.map(async (item) => {
       const eventName = item.summary || null;
       const parts = eventName && eventName.split('-');
-
       let vacation = null;
 
       /**
@@ -25,7 +24,6 @@ class ScriptHandler extends ServiceHandler {
        */
       if (parts && parts.length > 1) {
         const resourceName = parts[0].trim().toLowerCase() || eventName;
-
         /* Find resource by name */
         const resource = await FinderHelpers.findResourceByName(
           this.resourceRepository,
@@ -33,7 +31,9 @@ class ScriptHandler extends ServiceHandler {
         );
 
         /* If resource not found, don't save to the database */
-        if (!resource) return null;
+        if (!resource) {
+          return null;
+        }
 
         /**
          * Get vacation type from event name.
@@ -41,9 +41,7 @@ class ScriptHandler extends ServiceHandler {
          * @type {string}
          */
         const vacationType = parts[1].trim().toLowerCase().includes('paid') ? 'paid' : 'unpaid';
-
         const end = item.end.dateTime || item.end.date || Date.now();
-
         const candidate = await this.vacationRepository.getByCalendarId(item.id);
 
         /* Save to our database */
@@ -61,11 +59,14 @@ class ScriptHandler extends ServiceHandler {
           approvedByClient: false,
           impactsRevenue: false,
         };
+
         if (!candidate) {
           return this.vacationRepository.createEntity(vacation);
         }
+
         return null;
       }
+
       return null;
     });
   }

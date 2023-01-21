@@ -7,10 +7,7 @@ class BaseResourceCRUDHandler {
   }
 
   async createEntity(model, resourceId) {
-    await this.repository.createEntity({
-      ...model,
-      resourceId,
-    });
+    await this.repository.createEntity({...model, resourceId,});
 
     return this.repository.getAllByResourceId(resourceId);
   }
@@ -21,6 +18,7 @@ class BaseResourceCRUDHandler {
 
   async updateEntity(salaryId, model) {
     const entity = await this.repository.getEntityById(salaryId);
+
     if (!entity) {
       throw new EntityNotFoundError(`Resource ${this.modelName}`, 'id', salaryId);
     }
@@ -32,6 +30,7 @@ class BaseResourceCRUDHandler {
 
   async deleteEntity(id) {
     const entity = await this.repository.getEntityById(id);
+
     if (!entity) {
       throw new EntityNotFoundError(`Resource ${this.modelName}`, 'id', id);
     }

@@ -33,7 +33,6 @@ class VacationServiceHandler extends ServiceHandler {
 
     const startDate = resource?.resourceContracts[0]?.startDate;
     const endDate = resource?.resourceContracts[0]?.endDate;
-
     const d1 = DateHelpers.isDateInYear(startDate, endDate, vacation.start);
     const d2 = DateHelpers.isDateInYear(startDate, endDate, vacation.end);
 
@@ -59,7 +58,6 @@ class VacationServiceHandler extends ServiceHandler {
    */
   async getVacationLength(start, end) {
     const amountDays = DateHelpers.amountOfDaysInDate(start, end) + 1;
-
     const holidays = await this.countHolidays(start, end);
     const weekends = await this.countWeekends(start, end);
 
@@ -80,6 +78,7 @@ class VacationServiceHandler extends ServiceHandler {
     const field = vacationType === VACATION_TYPES.PAID
       ? VACATION_FIELDS.PAID_FIELD
       : VACATION_FIELDS.UNPAID_FIELD;
+
     return field;
   }
 
@@ -91,16 +90,16 @@ class VacationServiceHandler extends ServiceHandler {
    * @returns {Promise<boolean>}
    */
   async checkResourceDays(vacation, resource) {
-    const {
-      start, end,
-    } = vacation;
+    const { start, end, } = vacation;
     const vacationLength = await this.getVacationLength(start, end);
     const resourceField = this.getResourceField(vacation.type);
     const availableDays = resource[resourceField];
     const isResourceHasEnoughDays = this.isResourceHasEnoughDays(availableDays, vacationLength);
+
     if (isResourceHasEnoughDays) {
       return true;
     }
+
     throw new ValidationError('Resource does not have enough vacation days');
   }
 
@@ -112,9 +111,11 @@ class VacationServiceHandler extends ServiceHandler {
    */
   async isValidVacation(vacation, resource) {
     if (this.isValidDates(vacation.start, vacation.end)) {
+
       if (this.isVacationInContractDate(vacation, resource)) {
         return true;
       }
+
       throw new ValidationError('The assigned vacation does not correspond to the contract period');
     } else {
       throw new ValidationError('Start date cannot be less than end date');
@@ -125,21 +126,15 @@ class VacationServiceHandler extends ServiceHandler {
    * Preparing object to send to google calendar
    * @param vacation
    * @param resource
-   * @returns {{object}}}
+   * 
+   * @returns {{ Object }}}
    */
   prepareVacationForGoogle(vacation, resource) {
     return {
       summary: `${resource.firstName} ${resource.lastName} - ${Helpers.capitalize(vacation.type)}`,
       description: vacation.description,
-      start: {
-        date: moment(vacation.start)
-          .format('YYYY-MM-DD'),
-      },
-      end: {
-        date: moment(vacation.end)
-          .add({ days: 1 })
-          .format('YYYY-MM-DD'),
-      },
+      start: { date: moment(vacation.start).format('YYYY-MM-DD'), },
+      end: { date: moment(vacation.end).add({ days: 1 }).format('YYYY-MM-DD'), },
     };
   }
 
@@ -153,18 +148,16 @@ class VacationServiceHandler extends ServiceHandler {
     const newVacation = { ...vacation };
     // Google event object
     const event = this.prepareVacationForGoogle(vacation, resource);
-
     const calendarEvent = await this.googleCalendarService.createEvent(event);
-
     newVacation.synced = false;
+
     if (calendarEvent) {
-      const {
-        id, htmlLink,
-      } = calendarEvent.data;
+      const { id, htmlLink, } = calendarEvent.data;
       newVacation.synced = true;
       newVacation.gcalendarId = id;
       newVacation.eventLink = htmlLink;
     }
+
     return newVacation;
   }
 
@@ -179,10 +172,9 @@ class VacationServiceHandler extends ServiceHandler {
     if (event.data.status !== 'cancelled') {
       await this.googleCalendarService.deleteEvent(vacationEntity.gcalendarId);
 
-      return {
-        gcalendarId: null, eventLink: null, synced: null,
-      };
+      return { gcalendarId: null, eventLink: null, synced: null, };
     }
+
     return null;
   }
 
@@ -203,15 +195,14 @@ class VacationServiceHandler extends ServiceHandler {
    * @param baseObj
    * @param vacation
    * @param resource
+   * 
    * @returns {{newType: boolean, value: *}}
    */
   async vacationCreateRecalculating(baseObj, vacation, resource) {
     const daysLeft = await this.countVacationDaysLeft(resource[baseObj.key], vacation.start,
       vacation.end);
 
-    return {
-      ...baseObj, newType: false, value: daysLeft,
-    };
+    return { ...baseObj, newType: false, value: daysLeft, };
   }
 
   /**
@@ -241,6 +232,7 @@ class VacationServiceHandler extends ServiceHandler {
           newType: true,
         };
       }
+
       if (vacation.type === VACATION_TYPES.UNPAID) {
         return {
           ...baseObj,
@@ -254,12 +246,9 @@ class VacationServiceHandler extends ServiceHandler {
 
     if (vacation.changed('start') || vacation.changed('end')) {
       /* Amount of the vacation days of the previous date */
-      const prevDaysLeft = await this.getVacationLength(vacation.previous('start'),
-        vacation.previous('end'));
-
+      const prevDaysLeft = await this.getVacationLength(vacation.previous('start'), vacation.previous('end'));
       /* Amount of the vacation days of the current date */
       const currDaysLeft = await this.getVacationLength(vacation.start, vacation.end);
-
       const value = Math.abs(currDaysLeft - prevDaysLeft);
 
       /* If vacation days not equals, then return object, else return previous value */
@@ -275,14 +264,17 @@ class VacationServiceHandler extends ServiceHandler {
     }
 
     if (vacation.changed('statusId') && +vacation.previous('statusId') !== +vacation.statusId) {
+
       if (+vacation.statusId === VACATION_STATUSES.APPROVED) {
         return this.vacationCreateRecalculating(baseObj, vacation, resource);
       }
+
       if (+vacation.statusId === VACATION_STATUSES.NEW || +vacation.statusId
         === VACATION_STATUSES.REJECTED) {
         return this.vacationRejectRecalculating(baseObj, vacation, resource);
       }
     }
+
     return baseObj;
   }
 
@@ -297,9 +289,7 @@ class VacationServiceHandler extends ServiceHandler {
     /*  If vacation was rejected, return vacation days back */
     const days = await this.getVacationLength(vacation.start, vacation.end);
 
-    return {
-      ...baseObj, value: +resource[baseObj.key] + days,
-    };
+    return { ...baseObj, value: +resource[baseObj.key] + days,};
   }
 
   /**
@@ -316,12 +306,8 @@ class VacationServiceHandler extends ServiceHandler {
    */
   recalculateVacationDaysLeft(vacation, resource, method) {
     const { VACATION_RECALCULATE_METHOD } = COMMON;
-
     const field = this.getResourceField(vacation.type);
-
-    const baseObject = {
-      key: field, value: resource[field],
-    };
+    const baseObject = { key: field, value: resource[field], };
 
     switch (method) {
       /* Recalculate while creating vacation */
@@ -352,6 +338,7 @@ class VacationServiceHandler extends ServiceHandler {
    */
   async updateVacationDaysForResource(resourceId, obj) {
     const resource = await this.resourceRepository.getEntityById(resourceId);
+
     if (!resource) {
       throw new EntityNotFoundError('Resource', 'id', resourceId);
     }
@@ -364,6 +351,7 @@ class VacationServiceHandler extends ServiceHandler {
     }
 
     resource.updateModel(resource);
+
     return this.resourceRepository.updateEntity(resource);
   }
 
@@ -372,13 +360,12 @@ class VacationServiceHandler extends ServiceHandler {
    * @param recipients
    * @param vacationId
    * @param resource
+   * 
    * @returns {Promise<void>}
    */
   async sendEmailAboutVacation(recipients, vacationId, resource) {
     const eventLink = LinksFactory.createVacationLink(vacationId);
-
-    const letter = EmailsFactory.createVacationEmail(`${resource.firstName} ${resource.lastName}`,
-      eventLink, recipients);
+    const letter = EmailsFactory.createVacationEmail(`${resource.firstName} ${resource.lastName}`, eventLink, recipients);
 
     /* Send email to all recipients */
     return this.smtpService.sendEmail(letter);
@@ -392,12 +379,9 @@ class VacationServiceHandler extends ServiceHandler {
    */
   async sendEmailAboutApprovedVacation(resource, vacationId) {
     const eventLink = LinksFactory.createVacationLink(vacationId);
-
     const resources = await this.resourceRepository.getAll({
       filters: [
-        {
-          key: 'roleTitle', value: [ROLES.ADMIN, ROLES.HR, ROLES.PM, ROLES.PML, ROLES.QAL],
-        }],
+        { key: 'roleTitle', value: [ROLES.ADMIN, ROLES.HR, ROLES.PM, ROLES.PML, ROLES.QAL], }],
     });
 
     const allowedResource = [ROLES.PM, ROLES.PML, ROLES.QAL];
@@ -417,6 +401,7 @@ class VacationServiceHandler extends ServiceHandler {
       /* Send email to all recipients */
       return this.smtpService.sendEmail(letter);
     }
+
     return null;
   }
 
@@ -441,11 +426,13 @@ class VacationServiceHandler extends ServiceHandler {
       .map((holiday) => {
         const { availableIn } = holiday;
         const locations = availableIn.map((i) => i.id);
+
         if (locations) {
           return locations.includes(this.resourceLocationId) ? {
             day: holiday.day, month: holiday.month,
           } : null;
         }
+
         return null;
       })
       .filter((x) => x);
@@ -460,10 +447,8 @@ class VacationServiceHandler extends ServiceHandler {
   async getRecipientsFromSettings() {
     const { RECIPIENT_LIST: key } = SETTINGS_KEYS;
     const vacationSettings = await this.vacationSettingsRepository.getSettingsByKey(key);
-
     const resources = (vacationSettings && JSON.parse(vacationSettings.data)) || [];
-    const resourceIds = resources.map((x) => x.resourceId)
-      .filter((o) => o);
+    const resourceIds = resources.map((x) => x.resourceId).filter((o) => o);
 
     const resourceById = await this.resourceRepository.getAll({
       filters: [
@@ -476,6 +461,7 @@ class VacationServiceHandler extends ServiceHandler {
       const emailList = resourceById.items.map((e) => e.email);
       return [...new Set(emailList)];
     }
+
     return [];
   }
 }

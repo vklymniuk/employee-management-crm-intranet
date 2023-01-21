@@ -35,14 +35,7 @@ class ActionLogHandler {
       }
     });
 
-    return {
-      ...baseLog,
-      entityId,
-      oldData,
-      newData,
-      changes,
-      other,
-    };
+    return { ...baseLog, entityId, oldData, newData, changes, other,};
   }
 
   processing(config, instance) {
@@ -53,8 +46,13 @@ class ActionLogHandler {
       skipActionLog = false,
     } = config;
 
-    if (entityType === 'actionLog') return null;
-    if (skipActionLog) return null;
+    if (entityType === 'actionLog') {
+      return null;
+    }
+
+    if (skipActionLog) {
+      return null;
+    }
 
     const baseLog = {
       actionType,
