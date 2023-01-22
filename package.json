@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vklymniuk/swan-intranet.git"
+    "url": "git+https://github.com/vklymniuk/employee-management-crm-intranet.git"
   },
   "keywords": [
     "nodejs",
@@ -19,11 +19,11 @@
     "mysql"
   ],
   "author": "Volodymyr Klymniuk <Volodymyr.Klymniuk@gmail.com>, Vladimir Klymniuk <Vladimir.Klymniuk@gmail.com>",
-  "license": "MIT",
+  "license": "MIT-advertasing",
   "bugs": {
-    "url": "https://github.com/vklymniuk/swan-intranet/issues"
+    "url": "https://github.com/vklymniuk/employee-management-crm-intranet/issues"
   },
-  "homepage": "https://github.com/vklymniuk/swan-intranet#readme",
+  "homepage": "https://github.com/vklymniuk/employee-management-crm-intranet#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "cls-hooked": "^4.2.2",

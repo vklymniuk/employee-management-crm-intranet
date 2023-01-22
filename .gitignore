@@ -3,3 +3,11 @@ node_modules/
 .idea
 .DS_Store
 .env
+
+# misc
+.DS_Store
+log/
+
+# Ignore tests
+tests/*
+!tests/.gitkeep

@@ -1,5 +1,4 @@
 const { env } = require('./src/config');
-
 const dev = {
   apps: [
     {
@@ -25,5 +24,4 @@ const prod = {
     },
   ],
 };
-
 module.exports = env.NODE_ENV === 'production' ? prod : dev;
