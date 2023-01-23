@@ -1,0 +1,46 @@
+        # image: node:14.17.0
+
+        # pipelines:
+        #   branches:
+        #     development:
+        #       - step:
+        #           name: Deploy BE
+        #           image: alpine
+        #           script:
+        #             - mkdir packaged
+        #             - tar -cvf packaged/package.tar.gz *
+        #           artifacts:
+        #             - packaged/**
+        #       - step:
+        #           name: Deploy
+        #           image: alpine
+        #           deployment: test
+        #           script:
+        #             - mkdir upload
+        #             - tar -xf packaged/package.tar.gz -C upload
+        #             - apk update && apk add openssh rsync
+        #             - rsync -a  -e "ssh -o StrictHostKeyChecking=no" --delete upload/ $user@$address:../tmp/be
+        #             - ssh -o StrictHostKeyChecking=no $user@$address "pm2 stop api"
+        #             - ssh -o StrictHostKeyChecking=no $user@$address "rsync -a ../tmp/be/manageteam-intranet-2.0-be/"
+        #             - ssh -o StrictHostKeyChecking=no $user@$address "cd manageteam-intranet-2.0-be && sh deploy-stage.sh"
+        #     master:
+        #       - step:
+        #           name: Deploy BE
+        #           image: alpine
+        #           script:
+        #             - mkdir packaged
+        #             - tar -cvf packaged/package.tar.gz *
+        #           artifacts:
+        #             - packaged/**
+        #       - step:
+        #           name: Deploy
+        #           image: alpine
+        #           deployment: test
+        #           script:
+        #             - mkdir upload
+        #             - tar -xf packaged/package.tar.gz -C upload
+        #             - apk update && apk add openssh rsync
+        #             - rsync -a  -e "ssh -o StrictHostKeyChecking=no" --delete upload/ $userProd@$addressProd:../tmp/be
+        #             - ssh -o StrictHostKeyChecking=no $userProd@$addressProd "pm2 stop api"
+        #             - ssh -o StrictHostKeyChecking=no $userProd@$addressProd "rsync -a ../tmp/be/manageteam-intranet-2.0-be/"
+        #             - ssh -o StrictHostKeyChecking=no $userProd@$addressProd "cd manageteam-intranet-2.0-be && sh deploy-production.sh"
